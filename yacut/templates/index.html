@@ -65,6 +65,9 @@
                   {% endfor %}
                 {% endif %}
               {% endwith %}
+              {% if result_url %}
+                <a href="{{ result_url }}">{{ result_url }}</a>
+              {% endif %}
             </p>
 
           </div>
