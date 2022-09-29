@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
-from wtforms.validators import ValidationError, DataRequired, Length, Optional, URL
+from wtforms.validators import DataRequired, Length, Optional, URL
 
-from settings import ALLOWED_SYMBOLS, MAX_SHORT_ID_SIZE, MAX_URL_SIZE
+from settings import MAX_SHORT_ID_SIZE, MAX_URL_SIZE
 
 
 class URLForm(FlaskForm):
@@ -18,9 +18,3 @@ class URLForm(FlaskForm):
                     Optional()]
     )
     submit = SubmitField('Создать')
-
-    def validate_custom_id(self, custom_id):
-        for char in self.custom_id.data:
-            if char not in ALLOWED_SYMBOLS:
-                raise ValidationError(
-                    f'Символ {char} недопустим в короткой ссылке.')
