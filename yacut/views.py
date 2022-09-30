@@ -14,7 +14,9 @@ def index_view():
     if URL_map.get_url_map(short):
         flash(f'Имя {short} уже занято!')
         return render_template('index.html', form=form)
-    if short is not None and not URL_map.short_id_is_correct(short):
+    if (short != '' and
+       short is not None and
+       not URL_map.short_id_is_correct(short)):
         flash('Указано недопустимое имя для короткой ссылки')
         return render_template('index.html', form=form)
     url_map = URL_map.create_url_map(original, short)

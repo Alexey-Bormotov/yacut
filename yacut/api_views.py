@@ -10,8 +10,6 @@ def get_url(short_id):
     url_map = URL_map.get_url_map(short_id)
     if url_map is None:
         raise InvalidAPIUsage('Указанный id не найден', 404)
-    # Если корректность проверять выше, то тесты не пройдут:
-    # они обязательно ждут 404 и месседж 'Указанный id не найден'
     if not URL_map.short_id_is_correct(short_id):
         raise InvalidAPIUsage(
             'Указано недопустимое имя для короткой ссылки')
@@ -39,7 +37,7 @@ def create_id():
         if URL_map.get_url_map(short):
             raise InvalidAPIUsage(
                 f'Имя "{short}" уже занято.')
-    url_map = URL_map.create_url_map(original, short)
+    url_map = URL_map.create_url_map(original, short, api=True)
     return jsonify({
         'url': url_map.original,
         'short_link': url_for('index_view', _external=True) + url_map.short

@@ -1,10 +1,10 @@
 import os
+import re
 from string import ascii_letters, digits
 
-from yacut.utils import calculate_regexp
 
 ALLOWED_SYMBOLS = ascii_letters + digits
-REGEXP = calculate_regexp(ALLOWED_SYMBOLS)
+REGEXP = r'[' + re.escape(ALLOWED_SYMBOLS) + r']+'
 MAX_URL_SIZE = 2048
 MAX_SHORT_ID_SIZE = 16
 DEFAULT_SHORT_ID_SIZE = 6

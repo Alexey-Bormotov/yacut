@@ -16,8 +16,26 @@ class InvalidAPIUsage(Exception):
         return dict(message=self.message)
 
 
+class GenerationError(Exception):
+    status_code = 500
+
+    def __init__(self, message, status_code=None):
+        super().__init__()
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+
+    def to_dict(self):
+        return dict(message=self.message)
+
+
 @app.errorhandler(InvalidAPIUsage)
 def invalid_api_usage(error):
+    return jsonify(error.to_dict()), error.status_code
+
+
+@app.errorhandler(GenerationError)
+def generation_error(error):
     return jsonify(error.to_dict()), error.status_code
 
 
