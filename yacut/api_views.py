@@ -1,7 +1,7 @@
 from flask import jsonify, request, url_for
 
 from . import app
-from .error_handlers import InvalidAPIUsage
+from .error_handlers import GenerationError, InvalidAPIUsage
 from .models import URL_map
 
 
@@ -37,7 +37,10 @@ def create_id():
         if URL_map.get_url_map(short):
             raise InvalidAPIUsage(
                 f'Имя "{short}" уже занято.')
-    url_map = URL_map.create_url_map(original, short, api=True)
+    try:
+        url_map = URL_map.create_url_map(original, short)
+    except GenerationError as error:
+        return error.to_dict(), error.status_code
     return jsonify({
         'url': url_map.original,
         'short_link': url_for('index_view', _external=True) + url_map.short

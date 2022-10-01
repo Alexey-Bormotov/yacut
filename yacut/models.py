@@ -1,5 +1,4 @@
 from datetime import datetime
-from flask import abort
 from random import choices
 import re
 from urllib.parse import urlparse
@@ -18,7 +17,7 @@ class URL_map(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     @staticmethod
-    def get_unique_short_id(api):
+    def get_unique_short_id():
         for _ in range(GENERATE_SHORT_ID_TRIES):
             short_id = ''.join(choices(
                 ALLOWED_SYMBOLS,
@@ -26,25 +25,31 @@ class URL_map(db.Model):
             )
             if not URL_map.get_url_map(short_id):
                 return short_id
-        raise GenerationError(
-            'Не удалось сгенерировать уникальную ссылку'
-        ) if api else abort(500)
+        raise GenerationError('Не удалось сгенерировать уникальную ссылку')
+
+    @staticmethod
+    def validate_url(url):
+        parsed_url = urlparse(url)
+        return all([parsed_url.scheme, parsed_url.netloc])
 
     @staticmethod
     def url_is_correct(url):
-        return (len(url) < MAX_URL_SIZE and
-                all([urlparse(url).scheme, urlparse(url).netloc]))
+        return len(url) < MAX_URL_SIZE and URL_map.validate_url(url)
+
+    @staticmethod
+    def validate_short_id(short_id):
+        match = re.match(REGEXP, short_id)
+        return match is not None and match.group() == short_id
 
     @staticmethod
     def short_id_is_correct(short_id):
         return (len(short_id) < MAX_SHORT_ID_SIZE and
-                re.match(REGEXP, short_id) is not None and
-                re.match(REGEXP, short_id).group() == short_id)
+                URL_map.validate_short_id(short_id))
 
     @staticmethod
-    def create_url_map(original, short, api=False):
-        if short is None or not short:
-            short = URL_map.get_unique_short_id(api)
+    def create_url_map(original, short):
+        if not short:
+            short = URL_map.get_unique_short_id()
         url_map = URL_map(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()

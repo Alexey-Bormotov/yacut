@@ -1,6 +1,7 @@
 from flask import abort, flash, redirect, render_template, url_for
 
 from . import app
+from .error_handlers import GenerationError
 from .forms import URLForm
 from .models import URL_map
 
@@ -19,7 +20,10 @@ def index_view():
        not URL_map.short_id_is_correct(short)):
         flash('Указано недопустимое имя для короткой ссылки')
         return render_template('index.html', form=form)
-    url_map = URL_map.create_url_map(original, short)
+    try:
+        url_map = URL_map.create_url_map(original, short)
+    except GenerationError:
+        abort(500)
     return render_template(
         'index.html',
         form=form,
