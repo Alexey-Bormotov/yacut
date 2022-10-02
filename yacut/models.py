@@ -30,7 +30,7 @@ class URL_map(db.Model):
     @staticmethod
     def validate_url(url):
         parsed_url = urlparse(url)
-        return all([parsed_url.scheme, parsed_url.netloc])
+        return bool(parsed_url.scheme and parsed_url.netloc)
 
     @staticmethod
     def url_is_correct(url):
