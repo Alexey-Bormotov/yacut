@@ -98,7 +98,7 @@ Payload:
 ---
 ## 5. Техническая информация <a id=5></a>
 
-Стек технологий: Python 3, html, Flask, SQLAlchemy.
+Стек технологий: Python 3, html, Flask, SQLAlchemy, Alembic, Jinja2.
 
 Проект выполнен по MVT-ахитектуре.
 
