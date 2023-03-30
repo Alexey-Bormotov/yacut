@@ -87,7 +87,7 @@ Endpoint: "/api/id/{short_id}/"
 - Создание короткой ссылки:
 ```
 Method: POST
-Endpoint: "/api/v1/"
+Endpoint: "/api/id/"
 Payload:
 {
     "url": "string",
